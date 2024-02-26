@@ -1,4 +1,6 @@
 const { v4: uuidv4 } = require('uuid');
+const fs = require('fs/promises');
+const path = require('path');
 
 const HttpError = require('../models/http-error');
 const User = require('../models/user');
@@ -33,6 +35,7 @@ const getUser = async (req, res, next) => {
 
 const editUser = async (req, res, next) => {
   console.log('EDIT USER', req.body);
+
   const { name, email } = req.body;
   const id = req.params.userId;
 
