@@ -1,6 +1,4 @@
 const { v4: uuidv4 } = require('uuid');
-const fs = require('fs/promises');
-const path = require('path');
 
 const HttpError = require('../models/http-error');
 const User = require('../models/user');

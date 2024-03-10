@@ -7,6 +7,7 @@ require('dotenv').config();
 
 const billsRoutes = require('./routes/bills-routes');
 const usersRoutes = require('./routes/users-routes');
+const shopListRoutes = require('./routes/shoplist-routes');
 const HttpError = require('./models/http-error');
 // -------------------------------------------------------
 const app = express();
@@ -36,6 +37,7 @@ app.use((req, res, next) => {
 
 app.use('/api/bills', billsRoutes);
 app.use('/api/users', usersRoutes);
+app.use('/api/shop-list', shopListRoutes);
 
 // this middleware will execute if none of the above returned a response (unsupported routes)
 app.use((req, res, next) => {
