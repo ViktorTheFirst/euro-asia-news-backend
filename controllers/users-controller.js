@@ -90,6 +90,7 @@ const signup = async (req, res, next) => {
     email,
     password: hashedPassword,
     householdId: id,
+    profileImage: '',
   });
 
   const newPartnerUser = new User({
@@ -97,6 +98,7 @@ const signup = async (req, res, next) => {
     email: partnerEmail,
     password: hashedPassword,
     householdId: id,
+    profileImage: '',
   });
 
   try {

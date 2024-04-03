@@ -1,6 +1,7 @@
 const express = require('express');
-const usersController = require('../controllers/users-controller');
 const router = express.Router();
+
+const usersController = require('../controllers/users-controller');
 const fileUpload = require('../middlware/file-upload');
 const cleanFileDir = require('../middlware/clean-file-dir');
 

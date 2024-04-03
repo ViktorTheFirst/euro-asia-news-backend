@@ -15,7 +15,12 @@ const getShopListData = async (req, res, next) => {
     return next(error);
   }
 
-  res.status(200).json({ shopListData: shopListData.toObject() });
+  console.log('shopListData', shopListData);
+  if (!shopListData) {
+    res.status(200).json({ shopListData: {} });
+  } else {
+    res.status(200).json({ shopListData: shopListData.toObject() });
+  }
 };
 
 const saveShopList = async (req, res, next) => {
