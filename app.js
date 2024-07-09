@@ -61,7 +61,9 @@ app.use((error, req, res, next) => {
 
 mongoose
   .connect(
-    `mongodb+srv://vityamv:${process.env.ATLAS_PASS}@teremokdb.d6tjshu.mongodb.net/?retryWrites=true&w=majority`,
+    `mongodb+srv://${process.env.DB_USER_NAME}:${
+      process.env.ATLAS_PASS
+    }@${process.env.DB_NAME.toLowerCase()}.d6tjshu.mongodb.net/?retryWrites=true&w=majority`,
     { dbName: process.env.DB_NAME }
   )
   .then(() => app.listen(process.env.PORT))

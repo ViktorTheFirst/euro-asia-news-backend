@@ -5,7 +5,7 @@ const checkCookieAuth = require('../middlware/check-cookie-auth');
 
 router.get('/shopList', shopListController.getShopListData);
 
-router.use(checkCookieAuth);
+//router.use(checkCookieAuth);
 
 router.post('/shopList', shopListController.saveShopList);
 

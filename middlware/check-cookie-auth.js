@@ -6,10 +6,6 @@ module.exports = (req, res, next) => {
   if (req.method === 'OPTIONS') return next();
   const token = req.cookies.token;
 
-  /* console.log('req in auth', req.cookies);
-  console.log('with body', req.body);
-  console.log('with method', req.method); */
-
   try {
     if (!token) {
       throw new Error('Authentication failed');
