@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 
 const billsRoutes = require('./routes/bills-routes');
+const newsRoutes = require('./routes/news-routes');
 const usersRoutes = require('./routes/users-routes');
 const shopListRoutes = require('./routes/shoplist-routes');
 const HttpError = require('./models/http-error');
@@ -16,8 +17,12 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cookieParser());
 
-// builds middleware that exposes the images from uploads/images
+// builds middleware that exposes the images from files
 app.use('/uploads/images', express.static(path.join('uploads', 'images')));
+app.use(
+  '/uploads/news-images',
+  express.static(path.join('uploads', 'news-images'))
+);
 
 // CORS configuration middleware
 app.use((req, res, next) => {
@@ -35,6 +40,7 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use('/api/news', newsRoutes);
 app.use('/api/bills', billsRoutes);
 app.use('/api/users', usersRoutes);
 app.use('/api/shop-list', shopListRoutes);
