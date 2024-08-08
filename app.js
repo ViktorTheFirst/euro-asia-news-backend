@@ -40,6 +40,9 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use('/', (req, res) => {
+  res.send('Hello News');
+});
 app.use('/api/news', newsRoutes);
 app.use('/api/bills', billsRoutes);
 app.use('/api/users', usersRoutes);
