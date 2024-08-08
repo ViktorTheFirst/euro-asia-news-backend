@@ -24,7 +24,7 @@ app.use(
 
 // CORS configuration middleware
 app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+  res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader(
     'Access-Control-Allow-Headers',
@@ -69,7 +69,14 @@ mongoose
     { dbName: process.env.DB_NAME }
   )
   .then(() => {
-    console.log(`Server started on port ${process.env.PORT} or 2905 `);
-    app.listen(process.env.PORT || 2905);
+    if (process.env.NODE_ENV === 'development') {
+      app.listen(5000);
+      console.log(`Development server started on port 5000 `);
+    }
+
+    if (process.env.NODE_ENV === 'production') {
+      app.listen(process.env.PORT);
+      console.log(`Production server started on port ${process.env.PORT}`);
+    }
   })
   .catch((err) => console.warn(err));

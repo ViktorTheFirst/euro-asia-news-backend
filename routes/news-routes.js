@@ -1,7 +1,9 @@
 const express = require('express');
 const newsController = require('../controllers/news-controller');
 const router = express.Router();
-const checkCookieAuth = require('../middlware/check-cookie-auth');
+const checkPreFlight = require('../middlware/check-pre-flight');
+
+router.use(checkPreFlight);
 
 router.get('/getNews', newsController.getAllNews);
 
