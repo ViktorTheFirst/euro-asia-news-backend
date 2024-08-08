@@ -14,8 +14,7 @@ const userSchema = new Schema({
     required: true,
     minLength: 6,
   },
-  householdId: String,
-  profileImage: String,
+  role: String,
 });
 
 userSchema.plugin(uniqueValidator);
