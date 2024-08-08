@@ -68,5 +68,5 @@ mongoose
     }@${process.env.DB_NAME.toLowerCase()}.d6tjshu.mongodb.net/?retryWrites=true&w=majority`,
     { dbName: process.env.DB_NAME }
   )
-  .then(() => app.listen(process.env.PORT))
+  .then(() => app.listen(process.env.PORT || 2905))
   .catch((err) => console.warn(err));
