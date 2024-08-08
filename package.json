@@ -1,7 +1,7 @@
 {
-  "name": "teremokbe",
+  "name": "euro-asia-news-be",
   "version": "1.0.0",
-  "description": "backend for the teremok app",
+  "description": "backend for the euro-asia-news",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
