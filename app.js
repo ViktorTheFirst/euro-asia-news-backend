@@ -24,17 +24,23 @@ app.use(
 
 // CORS configuration middleware
 app.use((req, res, next) => {
+  res.setHeader('Vary', 'origin');
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Credentials', true);
+  res.setHeader('Access-Control-Request-Method', '*');
+  res.setHeader('Access-Control-Request-Headers', '*');
   res.setHeader(
     'Access-Control-Allow-Headers',
     'Origin, X-Requested-With, Content-Type, Accept, Authorization'
   );
   res.setHeader(
     'Access-Control-Allow-Methods',
-    '*'
-    /* 'GET, POST, PATCH, DELETE, PUT, HEAD, OPTIONS' */
+    'GET, POST, PATCH, DELETE, PUT, HEAD, OPTIONS'
   );
+
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end(); // End the preflight request successfully
+  }
+
   next();
 });
 
@@ -70,8 +76,8 @@ mongoose
   )
   .then(() => {
     if (process.env.NODE_ENV === 'development') {
-      app.listen(5000);
-      console.log(`Development server started on port 5000 `);
+      app.listen(6000);
+      console.log(`Development server started on port 6000 `);
     }
 
     if (process.env.NODE_ENV === 'production') {

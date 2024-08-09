@@ -3,7 +3,7 @@ const newsController = require('../controllers/news-controller');
 const router = express.Router();
 const checkPreFlight = require('../middlware/check-pre-flight');
 
-router.use(checkPreFlight);
+//router.use(checkPreFlight);
 
 router.get('/getNews', newsController.getAllNews);
 

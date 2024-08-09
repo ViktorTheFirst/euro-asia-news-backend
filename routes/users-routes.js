@@ -6,7 +6,7 @@ const fileUpload = require('../middlware/file-upload');
 const cleanFileDir = require('../middlware/clean-file-dir');
 const checkPreFlight = require('../middlware/check-pre-flight');
 
-router.use(checkPreFlight);
+//router.use(checkPreFlight);
 
 router.get('/getAllUsers', usersController.getAllUsers);
 

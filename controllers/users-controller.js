@@ -3,7 +3,6 @@ const { v4: uuidv4 } = require('uuid');
 const HttpError = require('../models/http-error');
 const User = require('../models/user');
 const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
 
 const getAllUsers = async (req, res, next) => {
   let users;
@@ -89,8 +88,6 @@ const signup = async (req, res, next) => {
     name,
     email,
     password: hashedPassword,
-    householdId: id,
-    profileImage: '',
   });
 
   const newPartnerUser = new User({
@@ -108,38 +105,6 @@ const signup = async (req, res, next) => {
     const error = new HttpError('Creating user failed ' + err, 500);
     return next(error);
   }
-
-  let token;
-  try {
-    token = jwt.sign(
-      { userId: newUser._id, email: newUser.email },
-      process.env.SECRET,
-      {
-        expiresIn: '8h',
-      }
-    );
-  } catch (err) {
-    const error = new HttpError('Creating user failed ' + err, 500);
-    return next(error);
-  }
-
-  res.cookie('token', token, {
-    httpOnly: true,
-    sameSite: 'none',
-    secure: true,
-  });
-
-  res.cookie('householdId', id, {
-    httpOnly: true,
-    sameSite: 'none',
-    secure: true,
-  });
-
-  res.cookie('userId', newUser._id.toString(), {
-    httpOnly: true,
-    sameSite: 'none',
-    secure: true,
-  });
 
   //return created user
   res.status(201).json({
@@ -182,43 +147,9 @@ const login = async (req, res, next) => {
     return next(error);
   }
 
-  let token;
-  try {
-    token = jwt.sign(
-      { userId: existingUser._id, email: existingUser.email },
-      process.env.SECRET,
-      {
-        expiresIn: '8h',
-      }
-    );
-  } catch (err) {
-    const error = new HttpError('Logging user failed ' + err, 500);
-    return next(error);
-  }
-
-  res.cookie('token', token, {
-    httpOnly: true,
-    sameSite: 'none',
-    secure: true,
-  });
-
-  res.cookie('householdId', existingUser.householdId, {
-    httpOnly: true,
-    sameSite: 'none',
-    secure: true,
-  });
-
-  res.cookie('userId', existingUser._id.toString(), {
-    httpOnly: true,
-    sameSite: 'none',
-    secure: true,
-  });
-
   res.json({
     name: existingUser.name,
     email: existingUser.email,
-    householdId: existingUser.householdId,
-    token,
   });
 };
 
