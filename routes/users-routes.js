@@ -6,7 +6,11 @@ const fileUpload = require('../middlware/file-upload');
 const cleanFileDir = require('../middlware/clean-file-dir');
 const checkPreFlight = require('../middlware/check-pre-flight');
 
+console.log('USER ROUTES HIT');
+
 //router.use(checkPreFlight);
+
+router.get('/:userId', usersController.getUser);
 
 router.get('/getAllUsers', usersController.getAllUsers);
 
@@ -21,6 +25,6 @@ router.post(
   usersController.editUser
 );
 
-router.get('/:userId', usersController.getUser);
+
 
 module.exports = router;

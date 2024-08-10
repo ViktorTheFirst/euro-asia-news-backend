@@ -17,7 +17,7 @@ const getAllUsers = async (req, res, next) => {
 };
 
 const getUser = async (req, res, next) => {
-  console.log('GET USER', req.params.userId);
+  console.log('GET USER controller', req.params.userId);
   const id = req.params.userId;
   let user;
   try {
