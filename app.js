@@ -16,7 +16,6 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 
 // builds middleware that exposes the images from files
-app.use('/uploads/images', express.static(path.join('uploads', 'images')));
 app.use(
   '/uploads/news-images',
   express.static(path.join('uploads', 'news-images'))
