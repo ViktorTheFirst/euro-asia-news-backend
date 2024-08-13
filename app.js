@@ -43,6 +43,10 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use('/', async (req, res, next) => {
+  res.send('This is the root');
+});
+
 app.use('/api/news', newsRoutes);
 app.use('/api/users', usersRoutes);
 
