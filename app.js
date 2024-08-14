@@ -43,12 +43,12 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/', async (req, res, next) => {
-  res.send('This is the root');
-});
-
 app.use('/api/news', newsRoutes);
 app.use('/api/users', usersRoutes);
+
+app.use('/', async (req, res, next) => {
+  res.send(`This is root with req.path: ${req.path}`);
+});
 
 // this middleware will execute if none of the above returned a response (unsupported routes)
 app.use((req, res, next) => {
@@ -79,8 +79,8 @@ mongoose
   )
   .then(() => {
     if (process.env.NODE_ENV === 'development') {
-      app.listen(6000);
-      console.log(`Development server started on port 6000 `);
+      app.listen(5001);
+      console.log(`Development server started on port 5001 `);
     }
 
     if (process.env.NODE_ENV === 'production') {
