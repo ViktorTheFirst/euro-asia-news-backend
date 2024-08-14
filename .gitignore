@@ -8,6 +8,7 @@ npm-debug.log
 .env
 .env.test
 
+package-lock.json
 # cache files
 
 .yarn/cache
