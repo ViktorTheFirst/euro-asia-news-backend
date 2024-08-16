@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "backend for the euro-asia-news",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "start": "cross-env NODE_ENV=production nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -23,9 +24,11 @@
     "mongoose": "^8.1.1",
     "mongoose-unique-validator": "^5.0.0",
     "multer": "^1.4.5-lts.1",
+    "mysql2": "^3.11.0",
     "uuid": "^9.0.1"
   },
   "devDependencies": {
+    "@types/node": "^22.3.0",
     "nodemon": "^3.0.3"
   }
 }

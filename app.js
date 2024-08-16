@@ -8,6 +8,8 @@ require('dotenv').config();
 const newsRoutes = require('./routes/news-routes');
 const usersRoutes = require('./routes/users-routes');
 const HttpError = require('./models/http-error');
+const { pool } = require('./DB/db-connect');
+
 // -------------------------------------------------------
 const app = express();
 
@@ -47,6 +49,12 @@ app.use('/api/news', newsRoutes);
 app.use('/api/users', usersRoutes);
 
 app.use('/', async (req, res, next) => {
+  /* const sql = 'SELECT username, email, create_time, role FROM user';
+
+  pool.execute(sql, function (err, result) {
+    console.log('RESULT', result);
+  }); */
+
   res.send(`This is root with req.path: ${req.path}`);
 });
 
@@ -70,6 +78,10 @@ app.use((error, req, res, next) => {
     .json({ message: error.message || 'An unknown error occurred' });
 });
 
+// connect to SQL
+//connect();
+
+// should delete soon
 mongoose
   .connect(
     `mongodb+srv://${process.env.DB_USER_NAME}:${

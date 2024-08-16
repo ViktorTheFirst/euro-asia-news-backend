@@ -1,37 +1,41 @@
-const { v4: uuidv4 } = require('uuid');
-
 const HttpError = require('../models/http-error');
-const User = require('../models/user');
 const bcrypt = require('bcryptjs');
+const { pool } = require('../DB/db-connect');
+const User = require('../models/UserModel');
 
 const getAllUsers = async (req, res, next) => {
-  let users;
+  const sql = 'SELECT username, email, create_time FROM user';
   try {
-    users = await User.find({}, '-password');
+    pool.execute(sql, function (err, result) {
+      if (err) throw err;
+
+      res.status(200).json({ users: result });
+    });
   } catch (err) {
+    console.log('err', err);
     const error = new HttpError('Fetching users failed on BE', 500);
     return next(error);
   }
-
-  res.json({ users });
 };
 
 const getUser = async (req, res, next) => {
-  console.log('GET USER controller', req.params.userId);
   const id = req.params.userId;
-  let user;
+  console.log('GET USER with id', id);
+  const sql = `SELECT username, email, create_time, role FROM user WHERE id = ${id}`;
   try {
-    user = await User.findById(id, '-password');
+    pool.execute(sql, function (err, result) {
+      if (err) throw err;
+
+      res.status(200).json({ user: result });
+    });
   } catch (err) {
     const error = new HttpError('Fetching user failed on BE', 500);
     return next(error);
   }
-
-  res.json({ user: user.toObject() });
 };
 
 const editUser = async (req, res, next) => {
-  console.log('EDIT USER', req.body);
+  /* console.log('EDIT USER', req.body);
 
   const { name, email } = req.body;
   const id = req.params.userId;
@@ -52,21 +56,27 @@ const editUser = async (req, res, next) => {
     return next(error);
   }
 
-  res.json({ user: user.toObject() });
+  res.json({ user: user.toObject() }); */
 };
 
 const signup = async (req, res, next) => {
-  const { name, partnerName, email, partnerEmail, password } = req.body;
-  console.log('SIGNUP', { name, partnerName, email, partnerEmail, password });
+  const { name, email, password } = req.body;
+  console.log('SIGNUP', { name, email, password });
 
+  //const sql_insert = `INSERT INTO user(username, email, password, create_time, role ) VALUES(${name}, ${email}, ${password}, ${new Date.now()} ,' user' )`;
+  const sql_get_one = `SELECT * FROM user WHERE email = '${email}'`;
   let existingUser;
   try {
-    existingUser = await User.findOne({ email });
+    pool.execute(sql_get_one, function (err, result) {
+      if (err) throw err;
+
+      existingUser = result;
+    });
   } catch (err) {
     const error = new HttpError('Signing up failed on BE', 500);
     return next(error);
   }
-
+  console.log('existingUser', existingUser);
   if (existingUser) {
     const error = new HttpError(
       'User with that email already exists, please log in',
@@ -82,25 +92,16 @@ const signup = async (req, res, next) => {
     const error = new HttpError('Could not create user ' + err, 500);
     return next(error);
   }
-  const id = uuidv4();
-  // create user in DB
   const newUser = new User({
     name,
     email,
     password: hashedPassword,
-  });
-
-  const newPartnerUser = new User({
-    name: partnerName,
-    email: partnerEmail,
-    password: hashedPassword,
-    householdId: id,
-    profileImage: '',
+    role: 'user',
   });
 
   try {
-    await newUser.save();
-    await newPartnerUser.save();
+    const createdUser = await newUser.save();
+    console.log('createdUser', createdUser);
   } catch (err) {
     const error = new HttpError('Creating user failed ' + err, 500);
     return next(error);
@@ -110,10 +111,6 @@ const signup = async (req, res, next) => {
   res.status(201).json({
     name,
     email,
-    partnerEmail,
-    partnerName,
-    householdId: id,
-    token,
   });
 };
 
