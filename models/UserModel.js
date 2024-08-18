@@ -1,5 +1,5 @@
-const { pool } = require('../DB/db-connect');
-const { getTodayDateForSql } = require('../utils/functions');
+import pool from '../DB/db-connect.js';
+import getTodayDateForSql from '../utils/functions.js';
 
 class User {
   constructor(props) {
@@ -8,10 +8,9 @@ class User {
     this.password = props.password;
     this.role = props.role;
   }
-
   async save() {
+    console.log('PROPS USER-------', this.props);
     const today = getTodayDateForSql();
-    console.log('today', today);
     let sql = `
             INSERT INTO user(
                 username,
@@ -26,14 +25,16 @@ class User {
                  '${this.password}',
                  '${today}',
                  '${this.role}'
-                )
+                );
         `;
-    const newUser = pool.execute(sql);
-    console.log('newUser', newUser);
-    return newUser;
+
+    const [result, _] = await pool.execute(sql);
+
+    // if user was inserted return the created id, otherwise undefined
+    return result.insertId ?? undefined;
   }
 
   static findAll() {}
 }
 
-module.exports = User;
+export { User };

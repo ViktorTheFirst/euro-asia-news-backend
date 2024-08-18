@@ -1,16 +1,15 @@
-const express = require('express');
-const newsController = require('../controllers/news-controller');
+import express from 'express';
+import {
+  addArticle,
+  getAllNews,
+  getNewsById,
+} from '../controllers/news-controller.js';
 const router = express.Router();
-const checkPreFlight = require('../middlware/check-pre-flight');
 
-//router.use(checkPreFlight);
+router.get('/getNews', getAllNews);
 
-router.get('/getNews', newsController.getAllNews);
+router.post('/addArticle', addArticle);
 
-router.get('/:newsId', newsController.getNewsById);
+router.get('/:newsId', getNewsById);
 
-//router.use(checkCookieAuth);
-
-router.post('/addArticle', newsController.addArticle);
-
-module.exports = router;
+export default router;

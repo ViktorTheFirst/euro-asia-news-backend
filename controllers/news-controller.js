@@ -1,105 +1,104 @@
-const HttpError = require('../models/http-error');
-const Article = require('../models/article');
+import HttpError from '../models/http-error.js';
+import { Article } from '../models/ArticleModel.js';
+import pool from '../DB/db-connect.js';
 
 const getAllNews = async (req, res, next) => {
-  let news;
-
+  const sql = 'SELECT * FROM news';
   try {
-    news = await Article.find({});
+    const [rows, _] = await pool.execute(sql);
+    console.log(`Fetched ${rows.length} articles`);
+
+    if (!rows.length) {
+      const error = new HttpError(`There are no news to show`, 404);
+      return next(error);
+    }
+
+    res.status(200).json({ news: rows });
   } catch (err) {
-    const error = new HttpError('Fetching news failed', 500);
+    const error = new HttpError('Fetching news failed on BE', 500);
     return next(error);
   }
-
-  console.log('AMOUNT OF ARTICLES ', news.length);
-
-  if (!news) {
-    const error = new HttpError(`There are no news to show`, 404);
-    return next(error);
-  }
-  res.status(200).json(news);
 };
 
 const getNewsById = async (req, res, next) => {
   const newsId = req.params.newsId;
-  let newsItem;
-
-  console.log(`Fetching article with id: ${newsId}`);
-
+  const sql = `SELECT * FROM news WHERE id = ${newsId}`;
   try {
-    newsItem = await Article.findOne({ itemId: newsId });
+    const [rows, _] = await pool.execute(sql);
+    console.log(`Fetched article with id ${newsId}`);
+
+    if (!rows.length) {
+      const error = new HttpError(
+        `There are no news item with id ${newsId}`,
+        404
+      );
+      return next(error);
+    }
+
+    res.status(200).json({ article: rows[0] });
   } catch (err) {
-    console.log('err', err);
-    const error = new HttpError('Fetching news item failed', 500);
+    const error = new HttpError('Fetching news failed on BE', 500);
     return next(error);
   }
-
-  if (!newsItem) {
-    const error = new HttpError(
-      `There are no news item with id ${newsId}`,
-      404
-    );
-    return next(error);
-  }
-
-  res.status(200).json(newsItem);
 };
 
 const addArticle = async (req, res, next) => {
   const {
-    itemId,
     articleType,
-    previewImageURL,
+    articleDate,
+    previewImageUrl,
     previewImageAlt,
+    author,
+    tags,
+    views,
     h1,
-    date,
     h1Paragraphs,
     h2,
     h2Paragraphs,
     h3,
     h3Paragraphs,
-    imageURL,
+    imageUrl,
     imageAlt,
-    authorh4,
-    authorParagraph,
     authorMedia,
-    tags,
   } = req.body;
 
-  const createdArticle = new Article({
-    itemId,
+  const newArticle = new Article({
     articleType,
-    previewImageURL,
+    articleDate,
+    previewImageUrl,
     previewImageAlt,
+    author,
+    tags,
+    views,
     h1,
-    date,
     h1Paragraphs,
     h2,
     h2Paragraphs,
     h3,
     h3Paragraphs,
-    imageURL,
+    imageUrl,
     imageAlt,
-    authorh4,
-    authorParagraph,
     authorMedia,
-    tags,
   });
 
+  let isArticleAdded;
   try {
-    await createdArticle.save();
+    isArticleAdded = await newArticle.save();
   } catch (err) {
     console.log('err', err);
-    const error = new HttpError('Creating article failed', 500);
+    const error = new HttpError('Creating article failed' + err, 500);
     return next(error);
   }
-  console.log(`ARTICLE WITH ID ${itemId} ADDED`);
-  res.status(201).json({
-    itemId,
-    h1,
-  });
+  if (isArticleAdded) {
+    console.log(`ARTICLE WITH ID ${isArticleAdded} ADDED`);
+    res.status(201).json({
+      id: isArticleAdded,
+      h1,
+    });
+    return;
+  }
+  const error = new HttpError('Creating article failed at the end', 409);
+  return next(error);
 };
 
-exports.getAllNews = getAllNews;
-exports.getNewsById = getNewsById;
-exports.addArticle = addArticle;
+export { getAllNews, getNewsById, addArticle };

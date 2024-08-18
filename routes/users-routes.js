@@ -1,24 +1,24 @@
-const express = require('express');
+import express from 'express';
+
+import {
+  getAllUsers,
+  getUser,
+  signup,
+  login,
+  editUser,
+} from '../controllers/users-controller.js';
+import fileUpload from '../middlware/file-upload.js';
+import cleanFileDir from '../middlware/clean-file-dir.js';
 const router = express.Router();
 
-const usersController = require('../controllers/users-controller');
-const fileUpload = require('../middlware/file-upload');
-const cleanFileDir = require('../middlware/clean-file-dir');
-const checkPreFlight = require('../middlware/check-pre-flight');
+router.get('/getAllUsers', getAllUsers);
 
-router.get('/getAllUsers', usersController.getAllUsers);
+router.get('/:userId', getUser);
 
-router.get('/:userId', usersController.getUser);
+router.post('/signup', signup);
 
-router.post('/signup', usersController.signup);
+router.post('/login', login);
 
-router.post('/login', usersController.login);
+router.post('/:userId', cleanFileDir, fileUpload.single('image'), editUser);
 
-router.post(
-  '/:userId',
-  cleanFileDir,
-  fileUpload.single('image'),
-  usersController.editUser
-);
-
-module.exports = router;
+export default router;

@@ -1,11 +1,10 @@
-const { mkdir, readdir, unlink } = require('fs/promises');
-const path = require('path');
-
-const HttpError = require('../models/http-error');
+import { mkdir, readdir, unlink } from 'fs/promises';
+import path from 'path';
+import HttpError from '../models/http-error.js';
 
 // creates a folder for the images in uploads/images if this is first upload
 // deletes previous image on each new upload
-module.exports = async (req, res, next) => {
+const clearDirectory = async (req, res, next) => {
   const directoryPath = path.join(
     process.cwd(),
     'uploads',
@@ -28,3 +27,5 @@ module.exports = async (req, res, next) => {
     return next(error);
   }
 };
+
+export default clearDirectory;

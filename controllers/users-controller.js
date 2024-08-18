@@ -1,18 +1,15 @@
-const HttpError = require('../models/http-error');
-const bcrypt = require('bcryptjs');
-const { pool } = require('../DB/db-connect');
-const User = require('../models/UserModel');
+import bcrypt from 'bcryptjs';
+import HttpError from '../models/http-error.js';
+import pool from '../DB/db-connect.js';
+import { User } from '../models/UserModel.js';
 
 const getAllUsers = async (req, res, next) => {
   const sql = 'SELECT username, email, create_time FROM user';
   try {
-    pool.execute(sql, function (err, result) {
-      if (err) throw err;
-
-      res.status(200).json({ users: result });
-    });
+    const [rows, _] = await pool.execute(sql);
+    console.log(`Fetched ${rows.length} users`);
+    res.status(200).json({ users: rows });
   } catch (err) {
-    console.log('err', err);
     const error = new HttpError('Fetching users failed on BE', 500);
     return next(error);
   }
@@ -20,14 +17,11 @@ const getAllUsers = async (req, res, next) => {
 
 const getUser = async (req, res, next) => {
   const id = req.params.userId;
-  console.log('GET USER with id', id);
+  console.log('Fetched user with id', id);
   const sql = `SELECT username, email, create_time, role FROM user WHERE id = ${id}`;
   try {
-    pool.execute(sql, function (err, result) {
-      if (err) throw err;
-
-      res.status(200).json({ user: result });
-    });
+    const [rows, _] = await pool.execute(sql);
+    res.json({ user: rows });
   } catch (err) {
     const error = new HttpError('Fetching user failed on BE', 500);
     return next(error);
@@ -63,20 +57,15 @@ const signup = async (req, res, next) => {
   const { name, email, password } = req.body;
   console.log('SIGNUP', { name, email, password });
 
-  //const sql_insert = `INSERT INTO user(username, email, password, create_time, role ) VALUES(${name}, ${email}, ${password}, ${new Date.now()} ,' user' )`;
   const sql_get_one = `SELECT * FROM user WHERE email = '${email}'`;
   let existingUser;
   try {
-    pool.execute(sql_get_one, function (err, result) {
-      if (err) throw err;
-
-      existingUser = result;
-    });
+    const [rows, _] = await pool.execute(sql_get_one);
+    existingUser = rows[0];
   } catch (err) {
     const error = new HttpError('Signing up failed on BE', 500);
     return next(error);
   }
-  console.log('existingUser', existingUser);
   if (existingUser) {
     const error = new HttpError(
       'User with that email already exists, please log in',
@@ -99,28 +88,34 @@ const signup = async (req, res, next) => {
     role: 'user',
   });
 
+  let isUserCreated;
   try {
-    const createdUser = await newUser.save();
-    console.log('createdUser', createdUser);
+    isUserCreated = await newUser.save();
   } catch (err) {
     const error = new HttpError('Creating user failed ' + err, 500);
     return next(error);
   }
 
-  //return created user
-  res.status(201).json({
-    name,
-    email,
-  });
+  if (isUserCreated) {
+    res.status(201).json({
+      name,
+      email,
+    });
+    return;
+  }
+  const error = new HttpError('Creating user failed', 409);
+  return next(error);
 };
 
 const login = async (req, res, next) => {
   const { email, password } = req.body;
   console.log('LOGIN', { email, password });
 
+  const sql_get_one = `SELECT * FROM user WHERE email = '${email}'`;
   let existingUser;
   try {
-    existingUser = await User.findOne({ email });
+    const [rows, _] = await pool.execute(sql_get_one);
+    existingUser = rows[0];
   } catch (err) {
     const error = new HttpError('Login failed on BE', 500);
     return next(error);
@@ -145,13 +140,10 @@ const login = async (req, res, next) => {
   }
 
   res.json({
-    name: existingUser.name,
+    id: existingUser.id,
+    name: existingUser.username,
     email: existingUser.email,
   });
 };
 
-exports.getAllUsers = getAllUsers;
-exports.signup = signup;
-exports.login = login;
-exports.getUser = getUser;
-exports.editUser = editUser;
+export { getAllUsers, signup, login, getUser, editUser };

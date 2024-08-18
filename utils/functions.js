@@ -10,4 +10,4 @@ const getTodayDateForSql = () => {
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 };
 
-module.exports = { getTodayDateForSql };
+export default getTodayDateForSql;
