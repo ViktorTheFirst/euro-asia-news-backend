@@ -1,19 +1,19 @@
 import HttpError from '../models/http-error.js';
 import { Article } from '../models/ArticleModel.js';
-import pool from '../DB/db-connect.js';
 
 const getAllNews = async (req, res, next) => {
-  const sql = 'SELECT * FROM news';
   try {
-    const [rows, _] = await pool.execute(sql);
-    console.log(`Fetched ${rows.length} articles`);
+    const articleInstance = new Article();
+    const news = await articleInstance.fetch();
 
-    if (!rows.length) {
+    console.log(`Fetched ${news.length} articles`);
+
+    if (!news.length) {
       const error = new HttpError(`There are no news to show`, 404);
       return next(error);
     }
 
-    res.status(200).json({ news: rows });
+    res.status(200).json({ news });
   } catch (err) {
     const error = new HttpError('Fetching news failed on BE', 500);
     return next(error);
@@ -22,12 +22,12 @@ const getAllNews = async (req, res, next) => {
 
 const getNewsById = async (req, res, next) => {
   const newsId = req.params.newsId;
-  const sql = `SELECT * FROM news WHERE id = ${newsId}`;
   try {
-    const [rows, _] = await pool.execute(sql);
+    const articleInstance = new Article();
+    const result = await articleInstance.getOneArticle(newsId);
     console.log(`Fetched article with id ${newsId}`);
 
-    if (!rows.length) {
+    if (!result.length) {
       const error = new HttpError(
         `There are no news item with id ${newsId}`,
         404
@@ -35,7 +35,7 @@ const getNewsById = async (req, res, next) => {
       return next(error);
     }
 
-    res.status(200).json({ article: rows[0] });
+    res.status(200).json({ article: result[0] });
   } catch (err) {
     const error = new HttpError('Fetching news failed on BE', 500);
     return next(error);
@@ -85,7 +85,6 @@ const addArticle = async (req, res, next) => {
   try {
     isArticleAdded = await newArticle.save();
   } catch (err) {
-    console.log('err', err);
     const error = new HttpError('Creating article failed' + err, 500);
     return next(error);
   }

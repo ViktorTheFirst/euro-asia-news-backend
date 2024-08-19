@@ -47,14 +47,6 @@ app.use('/api/news', newsRoutes);
 app.use('/api/users', usersRoutes);
 
 app.use('/', async (req, res, next) => {
-  /* const sql = 'SELECT username, email, create_time, role FROM user';
-  try {
-    const [rows, fields] = await pool.execute(sql);
-    console.log(rows);
-  } catch (error) {
-    console.error('Error fetching data:', error.message);
-  } */
-
   res.send(`This is root with req.path: ${req.path}`);
 });
 

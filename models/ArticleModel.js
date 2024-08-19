@@ -1,25 +1,27 @@
 import pool from '../DB/db-connect.js';
 
 class Article {
-  constructor(props) {
-    this.articleType = props.articleType;
-    this.articleDate = props.articleDate;
-    this.previewImageUrl = props.previewImageUrl;
-    this.previewImageAlt = props.previewImageAlt;
-    this.author = props.author;
-    this.tags = props.tags;
-    this.views = props.views;
-    this.h1 = props.h1;
-    this.h1Paragraphs = props.h1Paragraphs;
-    this.h2 = props.h2;
-    this.h2Paragraphs = props.h2Paragraphs;
-    this.h3 = props.h3;
-    this.h3Paragraphs = props.h3Paragraphs;
-    this.imageUrl = props.imageUrl;
-    this.imageAlt = props.imageAlt;
-    this.authorMedia = props.authorMedia;
+  constructor(props = {}) {
+    this.articleType = props.articleType || 'image';
+    this.articleDate = props.articleDate || new Date();
+    this.previewImageUrl = props.previewImageUrl || '';
+    this.previewImageAlt = props.previewImageAlt || '';
+    this.author = props.author || '';
+    this.tags = props.tags || [];
+    this.views = props.views || 0;
+    this.h1 = props.h1 || '';
+    this.h1Paragraphs = props.h1Paragraphs || [];
+    this.h2 = props.h2 || '';
+    this.h2Paragraphs = props.h2Paragraphs || [];
+    this.h3 = props.h3 || '';
+    this.h3Paragraphs = props.h3Paragraphs || [];
+    this.imageUrl = props.imageUrl || '';
+    this.imageAlt = props.imageAlt || '';
+    this.authorMedia = props.authorMedia || [];
   }
+
   async save() {
+    // TODO add try catch here to log sql errors
     let sql = `
             INSERT INTO news(
                 article_type,
@@ -99,12 +101,72 @@ class Article {
                  '${this.author}');`;
 
     const [result, _] = await pool.execute(sql);
-    console.log('ADD ARTICLE RESULT', result);
+
     // if user was inserted return the created id, otherwise undefined
     return result.insertId ?? undefined;
   }
 
-  static findAll() {}
+  async fetch() {
+    // TODO add try catch here to log sql errors
+    const sql = `SELECT * FROM news`;
+    const [result, _] = await pool.execute(sql);
+
+    const parsedData = this.#convertFromSqlToFront(result);
+    return parsedData;
+  }
+
+  async getOneArticle(newsId) {
+    let sql = `SELECT * FROM news WHERE id = ${newsId}`;
+    const [result, _] = await pool.execute(sql);
+
+    const parsedData = this.#convertFromSqlToFront(result);
+    return parsedData;
+  }
+
+  // helper method to convert article data coming from sql
+  // to IArticle data used in fron-end
+  #convertFromSqlToFront(array) {
+    let resultArray = [];
+
+    array.forEach((article) => {
+      const parsedArticle = {
+        itemId: article.id,
+        articleType: article.article_type,
+        previewImageURL: article.preview_image_url,
+        previewImageAlt: article.preview_image_alt,
+        date: article.article_date,
+        views: article.views,
+        h1: article.h1,
+        h1Paragraphs: [
+          { role: article.h1p1_type, text: article.h1p1_text },
+          { role: article.h1p2_type, text: article.h1p2_text },
+          { role: article.h1p3_type, text: article.h1p3_text },
+        ],
+        h2: article.h2,
+        h2Paragraphs: [
+          { role: article.h2p1_type, text: article.h2p1_text },
+          { role: article.h2p2_type, text: article.h2p2_text },
+          { role: article.h2p3_type, text: article.h2p3_text },
+        ],
+        h3: article.h3,
+        h3Paragraphs: [
+          { role: article.h3p1_type, text: article.h3p1_text },
+          { role: article.h3p2_type, text: article.h3p2_text },
+          { role: article.h3p3_type, text: article.h3p3_text },
+        ],
+        imageURL: article.image_url,
+        imageAlt: article.image_alt,
+        author: article.author,
+        authorMedia: [
+          { type: article.author_media_type1, url: article.author_media_url1 },
+          { type: article.author_media_type2, url: article.author_media_url2 },
+        ],
+        tags: [article.tag1, article.tag2, article.tag3, article.tag4],
+      };
+      resultArray.push(parsedArticle);
+    });
+    return resultArray;
+  }
 }
 
 export { Article };

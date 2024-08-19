@@ -9,7 +9,6 @@ class User {
     this.role = props.role;
   }
   async save() {
-    console.log('PROPS USER-------', this.props);
     const today = getTodayDateForSql();
     let sql = `
             INSERT INTO user(
