@@ -20,6 +20,16 @@ class Article {
     this.authorMedia = props.authorMedia || [];
   }
 
+  async getNextPK() {
+    const sql = `SELECT AUTO_INCREMENT
+                FROM information_schema.tables
+                WHERE table_schema = '${process.env.SQL_DB_NAME}'
+                AND table_name = 'news';`;
+    const [result, _] = await pool.execute(sql);
+
+    return result[0].AUTO_INCREMENT || 0;
+  }
+
   async save() {
     // TODO add try catch here to log sql errors
     let sql = `

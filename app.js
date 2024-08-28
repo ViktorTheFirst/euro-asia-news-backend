@@ -15,12 +15,7 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cookieParser());
 
-// builds middleware that exposes the images from files
-app.use(
-  '/uploads/news-images',
-  express.static(path.join('uploads', 'news-images'))
-);
-
+console.log('BEFORE CORS)');
 // CORS configuration middleware
 app.use((req, res, next) => {
   res.setHeader('Vary', 'origin');
@@ -43,6 +38,13 @@ app.use((req, res, next) => {
   next();
 });
 
+// builds middleware that exposes the images from files
+app.use(
+  '/uploads/news-images',
+  express.static(path.join('uploads', 'news-images'))
+);
+
+console.log('AFTER CORS)');
 app.use('/api/news', newsRoutes);
 app.use('/api/users', usersRoutes);
 

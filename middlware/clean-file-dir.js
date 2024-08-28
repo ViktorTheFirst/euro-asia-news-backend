@@ -8,16 +8,17 @@ const clearDirectory = async (req, res, next) => {
   const directoryPath = path.join(
     process.cwd(),
     'uploads',
-    'images',
-    req.params.userId
+    'news-images',
+    req.params.articleId
   );
   try {
     await mkdir(directoryPath, { recursive: true });
-    const images = await readdir(directoryPath);
+    console.log('directory created---------------');
+    /* const images = await readdir(directoryPath);
 
     for (const image of images) {
       await unlink(path.resolve(directoryPath, image));
-    }
+    } */
     next();
   } catch (err) {
     const error = new HttpError(

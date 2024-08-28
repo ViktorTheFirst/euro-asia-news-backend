@@ -61,6 +61,7 @@ const addArticle = async (req, res, next) => {
     imageAlt,
     authorMedia,
   } = req.body;
+  console.log('req.file.path', req.file.path);
 
   const newArticle = new Article({
     articleType,
@@ -100,4 +101,23 @@ const addArticle = async (req, res, next) => {
   return next(error);
 };
 
-export { getAllNews, getNewsById, addArticle };
+const getNextArticleId = async (req, res, next) => {
+  try {
+    const articleInstance = new Article();
+    const nextArticleId = await articleInstance.getNextPK();
+
+    console.log(`Next article will be with id ${nextArticleId}`);
+
+    if (nextArticleId === 0) {
+      const error = new HttpError(`Error fetching next PK`, 404);
+      return next(error);
+    }
+
+    res.status(200).json(nextArticleId);
+  } catch (err) {
+    const error = new HttpError('Fetching news failed on BE', 500);
+    return next(error);
+  }
+};
+
+export { getAllNews, getNewsById, addArticle, getNextArticleId };
