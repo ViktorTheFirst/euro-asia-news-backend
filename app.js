@@ -15,7 +15,6 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cookieParser());
 
-console.log('BEFORE CORS)');
 // CORS configuration middleware
 app.use((req, res, next) => {
   res.setHeader('Vary', 'origin');
@@ -44,7 +43,6 @@ app.use(
   express.static(path.join('uploads', 'news-images'))
 );
 
-console.log('AFTER CORS)');
 app.use('/api/news', newsRoutes);
 app.use('/api/users', usersRoutes);
 

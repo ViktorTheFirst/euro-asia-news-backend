@@ -11,7 +11,7 @@ const fileUpload = multer({
   limits: 1000000, // 1mb kb
   storage: multer.diskStorage({
     destination: (req, file, cb) => {
-      console.log('req.params.articleId in MULTER', req.params.articleId);
+      console.log('IMAGE UPLOADED TO FOLDER WITH ID: ', req.params.articleId);
       cb(null, `uploads/news-images/${req.params.articleId}`);
     },
     filename: (req, file, cb) => {

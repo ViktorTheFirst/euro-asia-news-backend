@@ -13,7 +13,7 @@ const clearDirectory = async (req, res, next) => {
   );
   try {
     await mkdir(directoryPath, { recursive: true });
-    console.log('directory created---------------');
+    console.log(`DIRECTORY ${directoryPath} CREATED FOR IMAGES`);
     /* const images = await readdir(directoryPath);
 
     for (const image of images) {

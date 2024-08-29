@@ -43,30 +43,30 @@ const getNewsById = async (req, res, next) => {
 };
 
 const addArticle = async (req, res, next) => {
+  console.log('ADD ATICLE BODY', req.body);
   const {
     articleType,
-    articleDate,
-    previewImageUrl,
-    previewImageAlt,
+    date,
     author,
-    tags,
-    views,
+    authorMedia,
+    previewImageURL,
+    previewImageAlt,
     h1,
     h1Paragraphs,
     h2,
     h2Paragraphs,
     h3,
     h3Paragraphs,
-    imageUrl,
-    imageAlt,
-    authorMedia,
+    articleImageURL,
+    articleImageAlt,
+    views,
+    tags,
   } = req.body;
-  console.log('req.file.path', req.file.path);
 
   const newArticle = new Article({
     articleType,
-    articleDate,
-    previewImageUrl,
+    date,
+    previewImageURL,
     previewImageAlt,
     author,
     tags,
@@ -77,8 +77,8 @@ const addArticle = async (req, res, next) => {
     h2Paragraphs,
     h3,
     h3Paragraphs,
-    imageUrl,
-    imageAlt,
+    articleImageURL,
+    articleImageAlt,
     authorMedia,
   });
 

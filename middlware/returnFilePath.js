@@ -1,6 +1,8 @@
 const returnFilePath = async (req, res, next) => {
   try {
-    const uploadedFileName = req.file.path;
+    const uploadedFileName =
+      '/' + req.file.destination + '/' + req.file.filename;
+
     res.json({ fileName: uploadedFileName });
   } catch (err) {
     const error = new HttpError('Failed returning file directory ' + err, 500);

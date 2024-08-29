@@ -3,8 +3,8 @@ import pool from '../DB/db-connect.js';
 class Article {
   constructor(props = {}) {
     this.articleType = props.articleType || 'image';
-    this.articleDate = props.articleDate || new Date();
-    this.previewImageUrl = props.previewImageUrl || '';
+    this.date = props.date || new Date();
+    this.previewImageURL = props.previewImageURL || '';
     this.previewImageAlt = props.previewImageAlt || '';
     this.author = props.author || '';
     this.tags = props.tags || [];
@@ -15,8 +15,8 @@ class Article {
     this.h2Paragraphs = props.h2Paragraphs || [];
     this.h3 = props.h3 || '';
     this.h3Paragraphs = props.h3Paragraphs || [];
-    this.imageUrl = props.imageUrl || '';
-    this.imageAlt = props.imageAlt || '';
+    this.articleImageURL = props.articleImageURL || '';
+    this.articleImageAlt = props.articleImageAlt || '';
     this.authorMedia = props.authorMedia || [];
   }
 
@@ -31,6 +31,8 @@ class Article {
   }
 
   async save() {
+    console.log('BEFORE SAVING TO SQL - previewImageURL', this.previewImageURL);
+    console.log('BEFORE SAVING TO SQL - articleImageURL', this.articleImageURL);
     // TODO add try catch here to log sql errors
     let sql = `
             INSERT INTO news(
@@ -73,9 +75,9 @@ class Article {
                 author)
                 VALUES(
                  '${this.articleType}',
-                 '${this.previewImageUrl}',
+                 '${this.previewImageURL}',
                  '${this.previewImageAlt}',
-                 '${this.articleDate}',
+                 '${this.date}',
                  '${this.views}',
                  '${this.h1}',
                  '${this.h1Paragraphs[0].text}',
@@ -98,8 +100,8 @@ class Article {
                  '${this.h3Paragraphs[1].role}',
                  '${this.h3Paragraphs[2].text}',
                  '${this.h3Paragraphs[2].role}',
-                 '${this.imageUrl}',
-                 '${this.imageAlt}',
+                 '${this.articleImageURL}',
+                 '${this.articleImageAlt}',
                  '${this.authorMedia[0].url}',
                  '${this.authorMedia[0].type}',
                  '${this.authorMedia[1].url}',
@@ -164,8 +166,8 @@ class Article {
           { role: article.h3p2_type, text: article.h3p2_text },
           { role: article.h3p3_type, text: article.h3p3_text },
         ],
-        imageURL: article.image_url,
-        imageAlt: article.image_alt,
+        articleImageURL: article.image_url,
+        articleImageAlt: article.image_alt,
         author: article.author,
         authorMedia: [
           { type: article.author_media_type1, url: article.author_media_url1 },
