@@ -2,7 +2,7 @@ import { mkdir, readdir, unlink } from 'fs/promises';
 import path from 'path';
 import HttpError from '../models/http-error.js';
 
-// creates a folder for the images in uploads/images if this is first upload
+// creates a folder for the images in uploads/news-images if this is first upload
 // deletes previous image on each new upload
 const clearDirectory = async (req, res, next) => {
   const directoryPath = path.join(

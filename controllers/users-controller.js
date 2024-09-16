@@ -1,4 +1,5 @@
 import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 import HttpError from '../models/http-error.js';
 import pool from '../DB/db-connect.js';
 import { User } from '../models/UserModel.js';
@@ -21,7 +22,7 @@ const getUser = async (req, res, next) => {
   const sql = `SELECT username, email, create_time, role FROM user WHERE id = ${id}`;
   try {
     const [rows, _] = await pool.execute(sql);
-    res.json({ user: rows });
+    res.json({ user: rows[0] });
   } catch (err) {
     const error = new HttpError('Fetching user failed on BE', 500);
     return next(error);
@@ -54,8 +55,8 @@ const editUser = async (req, res, next) => {
 };
 
 const signup = async (req, res, next) => {
-  const { name, email, password } = req.body;
-  console.log('SIGNUP', { name, email, password });
+  const { name, email, password, role } = req.body;
+  console.log('SIGNUP', { name, email, password, role });
 
   const sql_get_one = `SELECT * FROM user WHERE email = '${email}'`;
   let existingUser;
@@ -75,17 +76,20 @@ const signup = async (req, res, next) => {
   }
 
   let hashedPassword;
+  // ------------------create password-------------------------
   try {
     hashedPassword = await bcrypt.hash(password, 12);
   } catch (err) {
     const error = new HttpError('Could not create user ' + err, 500);
     return next(error);
   }
+
+  // ------------------create user-------------------------
   const newUser = new User({
     name,
     email,
     password: hashedPassword,
-    role: 'user',
+    role,
   });
 
   let isUserCreated;
@@ -96,10 +100,45 @@ const signup = async (req, res, next) => {
     return next(error);
   }
 
-  if (isUserCreated) {
+  // ------------------create token-------------------------
+  let token = null;
+  try {
+    token = jwt.sign(
+      { userName: newUser.username, email: newUser.email },
+      process.env.SECRET,
+      {
+        expiresIn: '8h',
+      }
+    );
+  } catch (err) {
+    const error = new HttpError('Creating user token failed ' + err, 500);
+    return next(error);
+  }
+
+  if (isUserCreated && token) {
+    res.cookie('userId', newUser.id.toString(), {
+      httpOnly: true,
+      sameSite: 'none',
+      secure: true,
+    });
+
+    res.cookie('userRole', newUser.role, {
+      httpOnly: true,
+      sameSite: 'none',
+      secure: true,
+    });
+
+    res.cookie('token', token, {
+      httpOnly: true,
+      sameSite: 'none',
+      secure: true,
+    });
+
     res.status(201).json({
+      id,
       name,
       email,
+      role,
     });
     return;
   }
@@ -139,10 +178,45 @@ const login = async (req, res, next) => {
     return next(error);
   }
 
+  let token;
+  try {
+    token = jwt.sign(
+      { userName: existingUser.username, email: existingUser.email },
+      process.env.SECRET,
+      {
+        expiresIn: '8h',
+      }
+    );
+  } catch (err) {
+    const error = new HttpError('Creating user token failed ' + err, 500);
+    return next(error);
+  }
+
+  res.cookie('userId', existingUser.id.toString(), {
+    httpOnly: true,
+    sameSite: 'none',
+    secure: true,
+  });
+
+  res.cookie('userRole', existingUser.role, {
+    httpOnly: true,
+    sameSite: 'none',
+    secure: true,
+  });
+
+  res.cookie('token', token, {
+    httpOnly: true,
+    sameSite: 'none',
+    secure: true,
+  });
+
+  console.log('TOKEN CREATED', token);
+
   res.json({
     id: existingUser.id,
     name: existingUser.username,
     email: existingUser.email,
+    role: existingUser.role,
   });
 };
 

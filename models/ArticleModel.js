@@ -31,91 +31,92 @@ class Article {
   }
 
   async save() {
-    console.log('BEFORE SAVING TO SQL - previewImageURL', this.previewImageURL);
-    console.log('BEFORE SAVING TO SQL - articleImageURL', this.articleImageURL);
-    // TODO add try catch here to log sql errors
-    let sql = `
-            INSERT INTO news(
-                article_type,
-                preview_image_url,
-                preview_image_alt,
-                article_date,
-                views,
-                h1,
-                h1p1_text,
-                h1p1_type,
-                h1p2_text,
-                h1p2_type,
-                h1p3_text,
-                h1p3_type,
-                h2,
-                h2p1_text,
-                h2p1_type,
-                h2p2_text,
-                h2p2_type,
-                h2p3_text,
-                h2p3_type,
-                h3,
-                h3p1_text,
-                h3p1_type,
-                h3p2_text,
-                h3p2_type,
-                h3p3_text,
-                h3p3_type,
-                image_url,
-                image_alt,
-                author_media_url1,
-                author_media_type1,
-                author_media_url2,
-                author_media_type2,
-                tag1,
-                tag2,
-                tag3,
-                tag4,
-                author)
-                VALUES(
-                 '${this.articleType}',
-                 '${this.previewImageURL}',
-                 '${this.previewImageAlt}',
-                 '${this.date}',
-                 '${this.views}',
-                 '${this.h1}',
-                 '${this.h1Paragraphs[0].text}',
-                 '${this.h1Paragraphs[0].role}',
-                 '${this.h1Paragraphs[1].text}',
-                 '${this.h1Paragraphs[1].role}',
-                 '${this.h1Paragraphs[2].text}',
-                 '${this.h1Paragraphs[2].role}',
-                 '${this.h2}',
-                 '${this.h2Paragraphs[0].text}',
-                 '${this.h2Paragraphs[0].role}',
-                 '${this.h2Paragraphs[1].text}',
-                 '${this.h2Paragraphs[1].role}',
-                 '${this.h2Paragraphs[2].text}',
-                 '${this.h2Paragraphs[2].role}',
-                 '${this.h3}',
-                 '${this.h3Paragraphs[0].text}',
-                 '${this.h3Paragraphs[0].role}',
-                 '${this.h3Paragraphs[1].text}',
-                 '${this.h3Paragraphs[1].role}',
-                 '${this.h3Paragraphs[2].text}',
-                 '${this.h3Paragraphs[2].role}',
-                 '${this.articleImageURL}',
-                 '${this.articleImageAlt}',
-                 '${this.authorMedia[0].url}',
-                 '${this.authorMedia[0].type}',
-                 '${this.authorMedia[1].url}',
-                 '${this.authorMedia[1].type}',
-                 '${this.tags[0]}',
-                 '${this.tags[1]}',
-                 '${this.tags[2]}',
-                 '${this.tags[3]}',
-                 '${this.author}');`;
+    try {
+      let sql = `
+              INSERT INTO news(
+                  article_type,
+                  preview_image_url,
+                  preview_image_alt,
+                  article_date,
+                  views,
+                  h1,
+                  h1p1_text,
+                  h1p1_type,
+                  h1p2_text,
+                  h1p2_type,
+                  h1p3_text,
+                  h1p3_type,
+                  h2,
+                  h2p1_text,
+                  h2p1_type,
+                  h2p2_text,
+                  h2p2_type,
+                  h2p3_text,
+                  h2p3_type,
+                  h3,
+                  h3p1_text,
+                  h3p1_type,
+                  h3p2_text,
+                  h3p2_type,
+                  h3p3_text,
+                  h3p3_type,
+                  image_url,
+                  image_alt,
+                  author_media_url1,
+                  author_media_type1,
+                  author_media_url2,
+                  author_media_type2,
+                  tag1,
+                  tag2,
+                  tag3,
+                  tag4,
+                  author)
+                  VALUES(
+                   '${this.articleType}',
+                   '${this.previewImageURL}',
+                   '${this.previewImageAlt}',
+                   '${this.date}',
+                   '${this.views}',
+                   '${this.h1}',
+                   '${this.h1Paragraphs[0].text}',
+                   '${this.h1Paragraphs[0].role}',
+                   '${this.h1Paragraphs[1].text}',
+                   '${this.h1Paragraphs[1].role}',
+                   '${this.h1Paragraphs[2].text}',
+                   '${this.h1Paragraphs[2].role}',
+                   '${this.h2}',
+                   '${this.h2Paragraphs[0].text}',
+                   '${this.h2Paragraphs[0].role}',
+                   '${this.h2Paragraphs[1].text}',
+                   '${this.h2Paragraphs[1].role}',
+                   '${this.h2Paragraphs[2].text}',
+                   '${this.h2Paragraphs[2].role}',
+                   '${this.h3}',
+                   '${this.h3Paragraphs[0].text}',
+                   '${this.h3Paragraphs[0].role}',
+                   '${this.h3Paragraphs[1].text}',
+                   '${this.h3Paragraphs[1].role}',
+                   '${this.h3Paragraphs[2].text}',
+                   '${this.h3Paragraphs[2].role}',
+                   '${this.articleImageURL}',
+                   '${this.articleImageAlt}',
+                   '${this.authorMedia[0].url}',
+                   '${this.authorMedia[0].type}',
+                   '${this.authorMedia[1].url}',
+                   '${this.authorMedia[1].type}',
+                   '${this.tags[0]}',
+                   '${this.tags[1]}',
+                   '${this.tags[2]}',
+                   '${this.tags[3]}',
+                   '${this.author}');`;
 
-    const [result, _] = await pool.execute(sql);
+      const [result, _] = await pool.execute(sql);
 
-    // if user was inserted return the created id, otherwise undefined
-    return result.insertId ?? undefined;
+      // if user was inserted return the created id, otherwise undefined
+      return result.insertId ?? undefined;
+    } catch (err) {
+      console.warn('Error saving article to data base' + err);
+    }
   }
 
   async fetch() {
@@ -132,6 +133,7 @@ class Article {
     const [result, _] = await pool.execute(sql);
 
     const parsedData = this.#convertFromSqlToFront(result);
+
     return parsedData;
   }
 

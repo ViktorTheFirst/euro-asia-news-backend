@@ -22,6 +22,7 @@ const getAllNews = async (req, res, next) => {
 
 const getNewsById = async (req, res, next) => {
   const newsId = req.params.newsId;
+  console.log('newsId', newsId);
   try {
     const articleInstance = new Article();
     const result = await articleInstance.getOneArticle(newsId);
@@ -86,7 +87,7 @@ const addArticle = async (req, res, next) => {
   try {
     isArticleAdded = await newArticle.save();
   } catch (err) {
-    const error = new HttpError('Creating article failed' + err, 500);
+    const error = new HttpError('Creating article failed ' + err, 500);
     return next(error);
   }
   if (isArticleAdded) {

@@ -9,6 +9,7 @@ const MIME_TYPE_MAP = {
 
 const fileUpload = multer({
   limits: 1000000, // 1mb kb
+
   storage: multer.diskStorage({
     destination: (req, file, cb) => {
       console.log('IMAGE UPLOADED TO FOLDER WITH ID: ', req.params.articleId);
@@ -16,7 +17,7 @@ const fileUpload = multer({
     },
     filename: (req, file, cb) => {
       const ext = MIME_TYPE_MAP[file.mimetype];
-
+      // TODO: add previe or article before v4
       cb(null, v4() + '.' + ext);
     },
   }),

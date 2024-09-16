@@ -19,6 +19,7 @@ app.use(cookieParser());
 app.use((req, res, next) => {
   res.setHeader('Vary', 'origin');
   res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Request-Method', '*');
   res.setHeader('Access-Control-Request-Headers', '*');
   res.setHeader(
@@ -47,6 +48,7 @@ app.use('/api/news', newsRoutes);
 app.use('/api/users', usersRoutes);
 
 app.use('/', async (req, res, next) => {
+  console.log('WILD ROUTE APPEARED !!!', req.path);
   res.send(`This is root with req.path: ${req.path}`);
 });
 
