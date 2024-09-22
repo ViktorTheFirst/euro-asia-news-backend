@@ -11,6 +11,9 @@ const checkCookieAuth = async (req, res, next) => {
       throw new Error('Authentication failed');
     }
     const decodedToken = jwt.verify(token, process.env.SECRET);
+    console.log('decodedToken', decodedToken);
+    console.log('req.userData', req.userData);
+
     req.userData = {
       userName: decodedToken.userName,
       email: decodedToken.email,

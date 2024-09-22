@@ -18,7 +18,12 @@ app.use(cookieParser());
 // CORS configuration middleware
 app.use((req, res, next) => {
   res.setHeader('Vary', 'origin');
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  //res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader(
+    'Access-Control-Allow-Origin',
+    'http://localhost:3000/',
+    'https://euro-asia-news.com/'
+  );
   res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Request-Method', '*');
   res.setHeader('Access-Control-Request-Headers', '*');

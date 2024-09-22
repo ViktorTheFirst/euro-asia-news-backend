@@ -55,7 +55,7 @@ const editUser = async (req, res, next) => {
 };
 
 const signup = async (req, res, next) => {
-  const { name, email, password, role } = req.body;
+  const { name, email, password, role = 'user' } = req.body;
   console.log('SIGNUP', { name, email, password, role });
 
   const sql_get_one = `SELECT * FROM user WHERE email = '${email}'`;
@@ -188,7 +188,10 @@ const login = async (req, res, next) => {
       }
     );
   } catch (err) {
-    const error = new HttpError('Creating user token failed ' + err, 500);
+    const error = new HttpError(
+      'Creating user token on login failed ' + err,
+      500
+    );
     return next(error);
   }
 
