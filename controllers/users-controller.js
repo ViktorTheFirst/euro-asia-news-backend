@@ -62,6 +62,7 @@ const signup = async (req, res, next) => {
   let existingUser;
   try {
     const [rows, _] = await pool.execute(sql_get_one);
+    console.log('rows', rows);
     existingUser = rows[0];
   } catch (err) {
     const error = new HttpError('Signing up failed on BE', 500);
@@ -92,9 +93,9 @@ const signup = async (req, res, next) => {
     role,
   });
 
-  let isUserCreated;
+  let createdUserId;
   try {
-    isUserCreated = await newUser.save();
+    createdUserId = await newUser.save();
   } catch (err) {
     const error = new HttpError('Creating user failed ' + err, 500);
     return next(error);
@@ -115,8 +116,10 @@ const signup = async (req, res, next) => {
     return next(error);
   }
 
-  if (isUserCreated && token) {
-    res.cookie('userId', newUser.id.toString(), {
+  if (createdUserId && token) {
+    console.log(`USER WITH id=${createdUserId} WAS CREATED`);
+
+    res.cookie('userId', createdUserId.toString(), {
       httpOnly: true,
       sameSite: 'none',
       secure: true,
@@ -135,7 +138,7 @@ const signup = async (req, res, next) => {
     });
 
     res.status(201).json({
-      id,
+      id: createdUserId,
       name,
       email,
       role,
@@ -212,8 +215,6 @@ const login = async (req, res, next) => {
     sameSite: 'none',
     secure: true,
   });
-
-  console.log('TOKEN CREATED', token);
 
   res.json({
     id: existingUser.id,
