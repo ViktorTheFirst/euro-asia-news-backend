@@ -5,6 +5,7 @@ import {
   getUser,
   signup,
   login,
+  logout,
   editUser,
 } from '../controllers/users-controller.js';
 import fileUpload from '../middlware/file-upload.js';
@@ -18,6 +19,8 @@ router.get('/:userId', getUser);
 router.post('/signup', signup);
 
 router.post('/login', login);
+
+router.post('/logout', logout);
 
 router.post('/:userId', cleanFileDir, fileUpload.single('image'), editUser);
 

@@ -121,20 +121,26 @@ const signup = async (req, res, next) => {
 
     res.cookie('userId', createdUserId.toString(), {
       httpOnly: true,
-      sameSite: 'none',
+      //sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
       secure: true,
+      //domain: '/euro-asia-news.com',
+      //maxAge: 60 * 60 * 24 * 7, // One week,
     });
 
     res.cookie('userRole', newUser.role, {
       httpOnly: true,
-      sameSite: 'none',
+      //sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
       secure: true,
+      //domain: '/euro-asia-news.com',
+      //maxAge: 60 * 60 * 24 * 7, // One week,
     });
 
     res.cookie('token', token, {
       httpOnly: true,
-      sameSite: 'none',
+      //sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
       secure: true,
+      //domain: '/euro-asia-news.com',
+      //maxAge: 60 * 60 * 24 * 7, // One week,
     });
 
     res.status(201).json({
@@ -200,20 +206,26 @@ const login = async (req, res, next) => {
 
   res.cookie('userId', existingUser.id.toString(), {
     httpOnly: true,
-    sameSite: 'none',
+    //sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
     secure: true,
+    //domain: '/euro-asia-news.com',
+    //maxAge: 70 * 60 * 24 * 7, // One week,
   });
 
   res.cookie('userRole', existingUser.role, {
     httpOnly: true,
-    sameSite: 'none',
+    //sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
     secure: true,
+    //domain: '/euro-asia-news.com',
+    //maxAge: 70 * 60 * 24 * 7, // One week,
   });
 
   res.cookie('token', token, {
     httpOnly: true,
-    sameSite: 'none',
+    //sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
     secure: true,
+    //domain: '/euro-asia-news.com',
+    //maxAge: 70 * 60 * 24 * 7, // One week,
   });
 
   res.json({
@@ -224,4 +236,28 @@ const login = async (req, res, next) => {
   });
 };
 
-export { getAllUsers, signup, login, getUser, editUser };
+const logout = async (req, res, next) => {
+  console.log('LOGOUT');
+
+  res.cookie('token', '', {
+    httpOnly: true,
+    secure: true,
+    expires: new Date(0),
+  });
+
+  res.cookie('userRole', '', {
+    httpOnly: true,
+    secure: true,
+    expires: new Date(0),
+  });
+
+  res.cookie('userId', '', {
+    httpOnly: true,
+    secure: true,
+    expires: new Date(0),
+  });
+
+  res.json({ message: 'Logged out successfully' });
+};
+
+export { getAllUsers, signup, login, getUser, editUser, logout };
