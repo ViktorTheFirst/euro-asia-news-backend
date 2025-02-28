@@ -6,6 +6,7 @@ import cookieParser from 'cookie-parser';
 import HttpError from './models/http-error.js';
 import newsRoutes from './routes/news-routes.js';
 import usersRoutes from './routes/users-routes.js';
+import sitesRoutes from './routes/sites-routes.js';
 import pool from './DB/db-connect.js';
 
 // -------------------------------------------------------
@@ -19,6 +20,7 @@ app.use(cookieParser());
 app.use((req, res, next) => {
   const allowedOrigins = [
     'http://localhost:3000',
+    'http://localhost:3001',
     'https://euro-asia-news.com',
   ];
 
@@ -56,6 +58,7 @@ app.use(
 
 app.use('/api/news', newsRoutes);
 app.use('/api/users', usersRoutes);
+app.use('/api/sites', sitesRoutes);
 
 app.use('/', async (req, res, next) => {
   console.log('WILD ROUTE APPEARED !!!', req.path);

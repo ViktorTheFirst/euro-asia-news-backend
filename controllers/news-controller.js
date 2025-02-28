@@ -22,7 +22,7 @@ const getAllNews = async (req, res, next) => {
 
 const getNewsById = async (req, res, next) => {
   const newsId = req.params.newsId;
-  console.log('newsId', newsId);
+
   try {
     const articleInstance = new Article();
     const result = await articleInstance.getOneArticle(newsId);
